@@ -136,7 +136,7 @@ if __name__ == "__main__":
 
         sapi_res = urequests.get(SD.get_thinner_url(35.65887100, 139.7012380))
         text_array = sapi_res.text.split("\n")
-        station_name = text_array[0]
+        station_name = text_array[0].replace("Ō", "O").replace("ō", "o")
         transfer_lines = text_array[1]
 
         SD.fill(0x0000)
