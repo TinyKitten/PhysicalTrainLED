@@ -111,6 +111,7 @@ class StationDisplay(framebuf.FrameBuffer):
 
 if __name__ == "__main__":
     WIFI_RETRY_COUNT = 0
+    WIFI_MAXIMUM_RETRY = 10
     WIFI_CONNECTED = False
 
     SD = StationDisplay()
@@ -119,7 +120,7 @@ if __name__ == "__main__":
     SD.text("Please wait", 0, 18, SD.WHITE)
     SD.show()
 
-    while WIFI_RETRY_COUNT <= 5:
+    while WIFI_RETRY_COUNT <= WIFI_MAXIMUM_RETRY:
         WIFI_RETRY_COUNT += 1
         if SD.get_is_connected():
             WIFI_CONNECTED = True
