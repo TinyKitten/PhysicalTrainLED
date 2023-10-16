@@ -100,8 +100,8 @@ class StationDisplay(framebuf.FrameBuffer):
                 self.write_data(self.buffer[page * 128 + num])
 
     def get_is_connected(self):
-        nic = network.WLAN(network.STA_IF)
-        return nic.isconnected()
+        wlan = network.WLAN(network.STA_IF)
+        return wlan.isconnected()
 
     def get_thinner_url(self, latitude, longitude):
         return "https://thinner-np6xgsb5la-an.a.run.app/nearby?latitude={}&longitude={}&en=true".format(
@@ -125,7 +125,7 @@ if __name__ == "__main__":
         if SD.get_is_connected():
             WIFI_CONNECTED = True
             pass
-        elif WIFI_RETRY_COUNT > 5:
+        elif WIFI_RETRY_COUNT > WIFI_MAXIMUM_RETRY:
             SD.fill(0x0000)
             SD.text("WIFI ERROR!", 0, 8, SD.WHITE)
             SD.show()
@@ -134,8 +134,11 @@ if __name__ == "__main__":
 
     if WIFI_CONNECTED:
         SCROLL_X_PADDING = 40
+        LATITUDE = 35.65887100
+        LONGITUDE = 139.7012380
 
-        sapi_res = urequests.get(SD.get_thinner_url(35.65887100, 139.7012380))
+        sapi_res = urequests.get(SD.get_thinner_url(LATITUDE, LONGITUDE))
+
         text_array = sapi_res.text.split("\n")
         station_name = text_array[0].replace("Ō", "O").replace("ō", "o")
         transfer_lines = text_array[1]
@@ -147,6 +150,9 @@ if __name__ == "__main__":
         SD.text(" NOW:", 0, 8, SD.WHITE)
         SD.text("LINE:", 0, 18, SD.WHITE)
         SD.show()
+
+        wlan = network.WLAN(network.STA_IF)
+        wlan.deinit()
 
         time.sleep(1)
 
